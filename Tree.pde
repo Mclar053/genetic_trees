@@ -26,6 +26,12 @@ class Tree{
     createNodes(0);
   }
   
+  void mutate(int _index){
+    Node currentNode = nodes.get(_index);
+    currentNode.setRoomID((int)random(100));
+    nodes.set(_index, currentNode);
+  }
+  
   //Recursive to create nodes for tree
   void createNodes(int _nodeNum){
     //Checks if current level in tree is less than the max treesize
@@ -52,10 +58,6 @@ class Tree{
     currentLevel--;
   }
   
-  Node createChildNode(int _parent){
-    return new Node(_parent);
-  }
-  
   Node getParentNode(int _n){
     if(_n<nodes.size()){
       return nodes.get(nodes.get(_n).getParent());
@@ -74,12 +76,20 @@ class Tree{
     return null;
   }
   
+  ArrayList<Node> getNodes(){
+    return nodes;
+  }
+  
+  int getSize(){
+    return nodes.size();
+  }
+  
   void printNodes(){
     println(nodes.size());
     for(int i=0; i<nodes.size(); i++){
       Node n = nodes.get(i);
       int[] c = n.getChildren();
-      print(i,"----",n.getParent(),"----");
+      print(i,"----",n.getParent(),"----",n.getRoomID(),"****");
       if(c!=null){
         for(int _c: c) print(" ",_c);
       }

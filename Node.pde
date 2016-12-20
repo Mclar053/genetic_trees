@@ -1,30 +1,26 @@
 class Node{
   
   private int parent;
-  private int type;
   private int[] children = null;
+  private int roomID;
   
   Node(){
     parent = -1;
-    type = (int)random(2);
+    roomID = (int)random(100);
   }
   
   Node(int _parent){
     parent = _parent;
-    type = (int)random(2);
+    roomID = (int)random(100);
   }
   
-  Node(int _parent, int _type){
+  Node(int _parent, int _id){
     parent = _parent;
-    type = _type;
+    roomID = _id;
   }
   
   void setParent(int _parent){
     parent = _parent;
-  }
-  
-  void setType(int _type){
-    type = _type;
   }
   
   void setChildrenArray(int _children){
@@ -39,15 +35,19 @@ class Node{
     children = _children;
   }
   
+  void setRoomID(int _id){
+    roomID = _id;
+  }
+  
   int getParent(){
     return parent;
   }
   
-  int getType(){
-    return type;
-  }
-  
   int[] getChildren(){
     return children;
+  }
+  
+  int getRoomID(){
+    return roomID;
   }
 }
