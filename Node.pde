@@ -19,6 +19,12 @@ class Node{
     roomID = _id;
   }
   
+  Node(Node _n){
+    parent = _n.getParent();
+    children = _n.getChildren();
+    roomID = _n.getRoomID();
+  }
+  
   void setParent(int _parent){
     parent = _parent;
   }
