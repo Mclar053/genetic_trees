@@ -4,9 +4,6 @@ class Tree{
   private ArrayList<Node> nodes;
   private int treeSize;
   private int currentLevel = 0;
-  int count;
-  
-  private int[] tempIndex; 
   
   //---------------CONSTRUCTORS
   Tree(){
@@ -70,68 +67,27 @@ class Tree{
   }
   
   ArrayList<Node> createSubTree(int _index, boolean _invert){
-    println("------START SUB TREE------");
-    ArrayList<Node> subNodes = new ArrayList<Node>();
-    tempIndex = new int[nodes.size()];
-    for(int i=0; i<tempIndex.length; i++){
-      tempIndex[i] = -1;
+    ArrayList<Node> subNodes;
+    int[] subIndex = new int[nodes.size()];
+    for(int i=0; i<subIndex.length; i++){
+      subIndex[i] = -1;
     }
-    
-    count = 0;
     
     if(_invert){
-      //tempIndex = findNodesInvert(0, _index);
+      subIndex = findNodesInvert(0, subIndex, _index);
+      subNodes = getNewSubNodesInvert(subIndex, _index);
     } else{
-      findNodes(_index);
+      subIndex = findNodes(_index, subIndex);
+      subNodes = getNewSubNodes(subIndex);
     }
     
-    for(int i: tempIndex){
-     print(i,"... ");
-    }
     
-    print("\n");
-    println("------END SUB TREE------");
     
-    subNodes = getNewSubNodes(tempIndex);
-    if(count>=30){
-      for(int i=0; i<10; i++)
-      println("**_**_*_*_*_*_ERROR:: OVERFLOW**_**_*_*_*_*_");
-      println("**_**_*_*_*_*_ERROR:: OVERFLOW**_**_*_*_*_*_");
-      println("**_**_*_*_*_*_ERROR:: OVERFLOW**_**_*_*_*_*_");
-    }
     return subNodes;
   }
   
   //Find nodes of small tree
-  void findNodes(int _index){
-    count++;
-    println("------FINDING", _index,"------");
-    int counter = getCurrentCount(tempIndex);
-    
-    tempIndex[_index] = counter;
-    Node currentNode = new Node(nodes.get(_index));
-    if(currentNode.getChildren() != null && count<30){
-      for(int i=0; i<currentNode.getChildren().length; i++){
-        println("COUNTER:",counter);
-        println("----",_index,"----");
-        
-        //for(int _i: tempIndex){
-        //  if(_i!=-1){print("[",_i,"]... ");}
-        // else{print(_i,"... ");}
-        //}
-        //print("\n\n");
-        for(int _i: currentNode.getChildren()){println("CHILD:",_i);}
-        println(currentNode.getChildren()[i]);
-        if(currentNode.getChildren()[i]!=_index){
-          findNodes(currentNode.getChildren()[i]);
-        }
-      }
-    }
-  }
-  
-  //Find nodes of small tree inverted... So that smallTree + smallTreeInverted = Original Tree 
-  int[] findNodesInvert(int _index, int[] _subIndex, int _avoidIndex){
-    println("------FINDING", _index,"------");
+  int[] findNodes(int _index, int[] _subIndex){
     int counter = getCurrentCount(_subIndex);
     
     int[] subIndex = _subIndex;
@@ -139,7 +95,24 @@ class Tree{
     Node currentNode = nodes.get(_index);
     if(currentNode.getChildren() != null){
       for(int i=0; i<currentNode.getChildren().length; i++){
-        subIndex = findNodesInvert(currentNode.getChildren()[i], subIndex, _avoidIndex);
+        subIndex = findNodes(currentNode.getChildren()[i], subIndex);
+      }
+    }
+    return subIndex;
+  }
+  
+  //Find nodes of small tree inverted... So that smallTree + smallTreeInverted = Original Tree 
+  int[] findNodesInvert(int _index, int[] _subIndex, int _avoidIndex){
+    int counter = getCurrentCount(_subIndex);
+    
+    int[] subIndex = _subIndex;
+    subIndex[_index] = counter;
+    Node currentNode = nodes.get(_index);
+    if(currentNode.getChildren() != null){
+      for(int i=0; i<currentNode.getChildren().length; i++){
+        if(currentNode.getChildren()[i] != _avoidIndex){
+          subIndex = findNodesInvert(currentNode.getChildren()[i], subIndex, _avoidIndex);
+        }
       }
     }
     return subIndex;
@@ -149,23 +122,75 @@ class Tree{
     ArrayList<Node> subNodes = new ArrayList<Node>();
     for(int i=0; i<_subIndex.length; i++){
       if(_subIndex[i]!=-1){
-        println("-----",i,"-----");
         Node currentNode = new Node(nodes.get(i));
-        
         if(currentNode.getParent() != -1){
           currentNode.setParent(_subIndex[currentNode.getParent()]);
         }
         if(currentNode.getChildren() != null){
           for(int j=0; j<currentNode.getChildren().length; j++){
-            println("OLD:",currentNode.getChildren()[j],j,_subIndex[currentNode.getChildren()[j]]);
             currentNode.setChildNode(j,_subIndex[currentNode.getChildren()[j]]); //<>//
-            println("NEW:",currentNode.getChildren()[j],j);
           }
         }
         subNodes.add(currentNode);
       }
     }
     return subNodes;
+  }
+  
+  ArrayList<Node> getNewSubNodesInvert(int[] _subIndex, int _avoidIndex){
+    ArrayList<Node> subNodes = new ArrayList<Node>();
+    int avoidPos;
+    for(int i=0; i<_subIndex.length; i++){
+      if(_subIndex[i]!=-1 && i!= _avoidIndex){
+        println(_subIndex[i],i,_avoidIndex);
+        Node currentNode = new Node(nodes.get(i));
+        if(currentNode.getParent() != -1){
+          currentNode.setParent(_subIndex[currentNode.getParent()]);
+        }
+        if(currentNode.getChildren() != null){
+          avoidPos = searchIntArray(currentNode.getChildren(),_avoidIndex);
+          if(avoidPos!=-1){
+            currentNode.setChildren(removeChildNode(currentNode.getChildren(), avoidPos));
+          }
+          for(int j=0; j<currentNode.getChildren().length; j++){
+            currentNode.setChildNode(j,_subIndex[currentNode.getChildren()[j]]);
+          }
+        }
+        subNodes.add(currentNode);
+      }
+    }
+    return subNodes;
+  }
+  
+  private int[] removeChildNode(int[] _childNodes, int _pos){
+    if(_childNodes.length-1==0){
+      int[] childNodes = new int[_childNodes.length-1];
+      int counter = 0;
+      for(int i=0; i<_childNodes.length; i++){
+        if(i!=_pos)
+        childNodes[counter++] = _childNodes[i];
+      }
+      return childNodes;
+    }
+    return null;
+  }
+  
+  private int[] addChildNode(int[] _childNodes, int _value){
+    int[] childNodes = new int[_childNodes.length+1];
+    for(int i=0; i<_childNodes.length; i++){
+      childNodes[i] = _childNodes[i];
+    }
+    childNodes[childNodes.length-1] = _value;
+    return childNodes;
+  }
+  
+  //Returns position of found number in array. If not found, return -1
+  private int searchIntArray(int[] _array, int _num){
+    for(int i=0; i<_array.length; i++){
+      if(_array[i]==_num)
+        return i;
+    }
+    return -1;
   }
   
   private int getCurrentCount(int[] _subIndex){
@@ -220,22 +245,6 @@ class Tree{
     }
   }
   
-  void printChildren(){
-    for(int i=0; i<nodes.size(); i++){
-      Node currentNode = nodes.get(i);
-      if(currentNode.getChildren()!=null){
-        for(int j: currentNode.getChildren())
-        println("NODE",i,": --",j);
-      }
-    }
-  }
-  void printParents(){
-    for(int i=0; i<nodes.size(); i++){
-      Node currentNode = nodes.get(i);
-      println("NODE PARENT",i,": --",currentNode.getParent());
-    }
-  }
-  
   int[] getParents(){
     int[] p = new int[nodes.size()];
     for(int i=0; i<p.length; i++){
@@ -257,5 +266,4 @@ class Tree{
     }
     return c;
   }
-  
 }

@@ -6,6 +6,7 @@ Date Created: 14/12/2016
 
 Tree t = new Tree(3);
 Tree[] a = new Tree[3];
+Tree[] b = new Tree[3];
 
 int[] oldP;
 int[] newP;
@@ -21,13 +22,31 @@ void setup(){
   //  t.mutate((int)random(t.getSize()));
   //}
   for(int i=0; i<a.length; i++){
-    int r = (int)random(t.getSize());
+    int r = (int)random(1,t.getSize()-1);
+    println("Random Number:", r);
     a[i] = new Tree(t.createSubTree(r, false));
+    b[i] = new Tree(t.createSubTree(r, true));
   }
-  //for(Tree _a : a){
-  //  _a.printNodes();
-  //}
-  println("-------------------------------");
+  for(int i=0; i<a.length; i++){
+    a[i].printNodes();
+    println("*******************************");
+    b[i].printNodes();
+    println("-------------------------------");
+  }
+  
+  
+  checkTree();
+}
+
+void draw(){
+  
+}
+
+void crossover(){
+  
+}
+
+void checkTree(){
   newC = t.getChildren();
   newP = t.getParents();
   for(int i=0; i<newC.length; i++){
@@ -43,13 +62,4 @@ void setup(){
       println("NODE",i,"-- OLD",oldP[i],"-- NEW",newP[i]);
     }
   }
-  //t.printNodes();
-}
-
-void draw(){
-  
-}
-
-void crossover(){
-  
 }
