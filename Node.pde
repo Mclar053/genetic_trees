@@ -21,7 +21,7 @@ class Node{
   
   Node(Node _n){
     parent = _n.getParent();
-    children = _n.getChildren();
+    setChildren(_n.getChildren());
     roomID = _n.getRoomID();
   }
   
@@ -38,7 +38,14 @@ class Node{
   }
   
   void setChildren(int[] _children){
-    children = _children;
+    if(_children != null){
+      children = new int[_children.length];
+      for(int i=0; i<children.length; i++){
+        children[i] = _children[i];
+      }
+    } else{
+      children = null;
+    }
   }
   
   void setRoomID(int _id){
