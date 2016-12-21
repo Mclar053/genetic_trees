@@ -57,11 +57,14 @@ class Node{
   }
   
   int[] getChildren(){
-    int[] _c = new int[children.length];
-    for(int i=0; i<_c.length; i++){
-      _c[i] = children[i];
+    if(children != null){
+      int[] _c = new int[children.length];
+      for(int i=0; i<_c.length; i++){
+        _c[i] = children[i];
+      }
+      return _c;
     }
-    return _c;
+    return null;
   }
   
   int getRoomID(){
@@ -83,9 +86,15 @@ class Node{
   
   //Adds a child node to a nodes childNodes int array
   void addChildNode(int _value){
-    int[] childNodes = new int[children.length+1];
-    for(int i=0; i<children.length; i++){
-      childNodes[i] = children[i];
+    int[] childNodes;
+    if(children == null){
+      childNodes = new int[1];
+    }
+    else{
+      childNodes = new int[children.length+1];
+      for(int i=0; i<children.length; i++){
+        childNodes[i] = children[i];
+      }
     }
     childNodes[childNodes.length-1] = _value;
     setChildren(childNodes);

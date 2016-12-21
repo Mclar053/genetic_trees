@@ -7,6 +7,7 @@ Date Created: 14/12/2016
 Tree t = new Tree(3);
 Tree[] a = new Tree[3];
 Tree[] b = new Tree[3];
+Tree[] c = new Tree[3];
 
 int[] oldP;
 int[] newP;
@@ -25,15 +26,22 @@ void setup(){
     int r = (int)random(1,t.getSize()-1);
     println("Random Number:", r);
     a[i] = new Tree(t.createSubTree(r, false));
+    println(i,"A");
     b[i] = new Tree(t.createSubTree(r, true));
+    println(i,"B");
+    int r2 = (int)random(a[i].getSize());
+    c[i] = combineTrees(a[i],b[i],r2);
+    println(i,"C", r2);
   }
   for(int i=0; i<a.length; i++){
     a[i].printNodes();
     println("*******************************");
     b[i].printNodes();
+    println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    c[i].printNodes();
     println("-------------------------------");
   }
-  
+
   
   checkTree();
 }
@@ -61,7 +69,7 @@ Tree combineTrees(Tree _tOne, Tree _tTwo, int _childRoot){
     else{
       currentNode.setParent(_childRoot);
       Node childRoot = newNodes.get(_childRoot);
-      childRoot.addChildNode();
+      childRoot.addChildNode(nodesOne.size());
     }
     int[] currentNodeChildren = currentNode.getChildren();
     if(currentNodeChildren != null){
@@ -72,7 +80,7 @@ Tree combineTrees(Tree _tOne, Tree _tTwo, int _childRoot){
     
     newNodes.add(currentNode);
   }
-  return new Tree();
+  return new Tree(newNodes);
 }
 
 void checkTree(){

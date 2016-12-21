@@ -151,7 +151,6 @@ class Tree{
     int avoidPos;
     for(int i=0; i<_subIndex.length; i++){
       if(_subIndex[i]!=-1 && i!= _avoidIndex){
-        println(_subIndex[i],i,_avoidIndex);
         Node currentNode = new Node(nodes.get(i));
         if(currentNode.getParent() != -1){
           currentNode.setParent(_subIndex[currentNode.getParent()]);
@@ -161,8 +160,10 @@ class Tree{
           if(avoidPos!=-1){
             currentNode.removeChildNode(avoidPos);
           }
-          for(int j=0; j<currentNode.getChildren().length; j++){
-            currentNode.setChildNode(j,_subIndex[currentNode.getChildren()[j]]);
+          if(currentNode.getChildren() != null){
+            for(int j=0; j<currentNode.getChildren().length; j++){
+              currentNode.setChildNode(j,_subIndex[currentNode.getChildren()[j]]);
+            }
           }
         }
         subNodes.add(currentNode);
