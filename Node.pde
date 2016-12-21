@@ -57,10 +57,37 @@ class Node{
   }
   
   int[] getChildren(){
-    return children;
+    int[] _c = new int[children.length];
+    for(int i=0; i<_c.length; i++){
+      _c[i] = children[i];
+    }
+    return _c;
   }
   
   int getRoomID(){
     return roomID;
+  }
+  //Removes a child node from a nodes childNodes int array
+  void removeChildNode(int _pos){
+    if(children.length-1==0){
+      int[] childNodes = new int[children.length-1];
+      int counter = 0;
+      for(int i=0; i<children.length; i++){
+        if(i!=_pos)
+        childNodes[counter++] = children[i];
+      }
+      setChildren(childNodes);
+    }
+    setChildren(null);
+  }
+  
+  //Adds a child node to a nodes childNodes int array
+  void addChildNode(int _value){
+    int[] childNodes = new int[children.length+1];
+    for(int i=0; i<children.length; i++){
+      childNodes[i] = children[i];
+    }
+    childNodes[childNodes.length-1] = _value;
+    setChildren(childNodes);
   }
 }

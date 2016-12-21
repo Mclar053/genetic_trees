@@ -46,6 +46,35 @@ void crossover(){
   
 }
 
+Tree combineTrees(Tree _tOne, Tree _tTwo, int _childRoot){
+  ArrayList<Node> nodesOne = _tOne.getNodes();
+  ArrayList<Node> nodesTwo = _tTwo.getNodes();
+  ArrayList<Node> newNodes = new ArrayList<Node>();
+  for(Node n: nodesOne){
+    newNodes.add(new Node(n));
+  }
+  for(Node n: nodesTwo){
+    Node currentNode = new Node(n);
+    if(currentNode.getParent()!=-1){
+      currentNode.setParent(currentNode.getParent()+nodesOne.size());
+    }
+    else{
+      currentNode.setParent(_childRoot);
+      Node childRoot = newNodes.get(_childRoot);
+      childRoot.addChildNode();
+    }
+    int[] currentNodeChildren = currentNode.getChildren();
+    if(currentNodeChildren != null){
+      for(int i=0; i<currentNodeChildren.length; i++){
+        currentNodeChildren[i]+=nodesOne.size();
+      }
+    }
+    
+    newNodes.add(currentNode);
+  }
+  return new Tree();
+}
+
 void checkTree(){
   newC = t.getChildren();
   newP = t.getParents();

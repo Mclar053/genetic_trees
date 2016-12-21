@@ -21,7 +21,10 @@ class Tree{
   }
   
   Tree(ArrayList<Node> _nodes){
-    nodes = _nodes;
+    nodes = new ArrayList<Node>();
+    for(Node n: _nodes){
+      nodes.add(new Node(n));
+    }
   }
   
   //---------------METHODS
@@ -39,7 +42,7 @@ class Tree{
     nodes.set(_index, currentNode);
   }
   
-  
+  //------CREATE NEW TREE
   //Recursive to create nodes for tree
   void createNodes(int _nodeNum){
     //Checks if current level in tree is less than the max treesize
@@ -66,6 +69,8 @@ class Tree{
     currentLevel--;
   }
   
+  
+  //------CREATE SUB TREE FROM CURRENT TREE
   ArrayList<Node> createSubTree(int _index, boolean _invert){
     ArrayList<Node> subNodes;
     int[] subIndex = new int[nodes.size()];
@@ -80,12 +85,11 @@ class Tree{
       subIndex = findNodes(_index, subIndex);
       subNodes = getNewSubNodes(subIndex);
     }
-    
-    
-    
+        
     return subNodes;
   }
   
+  //------FIND NODES FOR NORMAL SUB TREE
   //Find nodes of small tree
   int[] findNodes(int _index, int[] _subIndex){
     int counter = getCurrentCount(_subIndex);
@@ -101,6 +105,7 @@ class Tree{
     return subIndex;
   }
   
+  //------FIND NODES FOR INVERTED SUB TREE
   //Find nodes of small tree inverted... So that smallTree + smallTreeInverted = Original Tree 
   int[] findNodesInvert(int _index, int[] _subIndex, int _avoidIndex){
     int counter = getCurrentCount(_subIndex);
@@ -118,6 +123,8 @@ class Tree{
     return subIndex;
   }
   
+  //------CREATE NEW NODES FOR NORMAL SUB TREE
+  //Creates new nodes for sub tree
   ArrayList<Node> getNewSubNodes(int[] _subIndex){
     ArrayList<Node> subNodes = new ArrayList<Node>();
     for(int i=0; i<_subIndex.length; i++){
@@ -137,6 +144,8 @@ class Tree{
     return subNodes;
   }
   
+  //------CREATE NEW NODES FOR INVERTED SUB TREE
+  //Creates new nodes for inverted sub tree. Avoids the a certain node
   ArrayList<Node> getNewSubNodesInvert(int[] _subIndex, int _avoidIndex){
     ArrayList<Node> subNodes = new ArrayList<Node>();
     int avoidPos;
@@ -150,7 +159,7 @@ class Tree{
         if(currentNode.getChildren() != null){
           avoidPos = searchIntArray(currentNode.getChildren(),_avoidIndex);
           if(avoidPos!=-1){
-            currentNode.setChildren(removeChildNode(currentNode.getChildren(), avoidPos));
+            currentNode.removeChildNode(avoidPos);
           }
           for(int j=0; j<currentNode.getChildren().length; j++){
             currentNode.setChildNode(j,_subIndex[currentNode.getChildren()[j]]);
@@ -162,28 +171,6 @@ class Tree{
     return subNodes;
   }
   
-  private int[] removeChildNode(int[] _childNodes, int _pos){
-    if(_childNodes.length-1==0){
-      int[] childNodes = new int[_childNodes.length-1];
-      int counter = 0;
-      for(int i=0; i<_childNodes.length; i++){
-        if(i!=_pos)
-        childNodes[counter++] = _childNodes[i];
-      }
-      return childNodes;
-    }
-    return null;
-  }
-  
-  private int[] addChildNode(int[] _childNodes, int _value){
-    int[] childNodes = new int[_childNodes.length+1];
-    for(int i=0; i<_childNodes.length; i++){
-      childNodes[i] = _childNodes[i];
-    }
-    childNodes[childNodes.length-1] = _value;
-    return childNodes;
-  }
-  
   //Returns position of found number in array. If not found, return -1
   private int searchIntArray(int[] _array, int _num){
     for(int i=0; i<_array.length; i++){
@@ -193,6 +180,9 @@ class Tree{
     return -1;
   }
   
+  //Gets the current counter for an int array
+  //It counts the integers that are not equal to -1
+  //E.g [-1,-1,-1,0,1,2,-1,3,4] would return [5]
   private int getCurrentCount(int[] _subIndex){
     int sum = 0;
     for(int i: _subIndex){
