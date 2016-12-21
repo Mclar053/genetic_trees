@@ -4,7 +4,7 @@ Author: Matthew Clark
 Date Created: 14/12/2016
 */
 
-Tree t = new Tree(3);
+Tree t = new Tree(2);
 Tree[] a = new Tree[3];
 Tree[] b = new Tree[3];
 Tree[] c = new Tree[3];
@@ -25,13 +25,16 @@ void setup(){
   for(int i=0; i<a.length; i++){
     int r = (int)random(1,t.getSize()-1);
     println("Random Number:", r);
-    a[i] = new Tree(t.createSubTree(r, false));
     println(i,"A");
-    b[i] = new Tree(t.createSubTree(r, true));
+    a[i] = new Tree(t.createSubTree(r, false));
+    
     println(i,"B");
-    int r2 = (int)random(a[i].getSize());
-    c[i] = combineTrees(b[i],a[i],r2);
+    b[i] = new Tree(t.createSubTree(r, true));
+    
+    int r2 = (int)random(0,b[i].getSize());
     println(i,"C", r2);
+    c[i] = combineTrees(b[i],a[i],r2);
+    
   }
   for(int i=0; i<a.length; i++){
     a[i].printNodes();
@@ -77,7 +80,7 @@ Tree combineTrees(Tree _tOne, Tree _tTwo, int _childRoot){
         currentNodeChildren[i]+=nodesOne.size();
       }
     }
-    
+    currentNode.setChildren(currentNodeChildren);
     newNodes.add(currentNode);
   }
   return new Tree(newNodes);
