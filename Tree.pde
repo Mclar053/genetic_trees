@@ -158,7 +158,9 @@ class Tree{
         if(currentNode.getChildren() != null){
           avoidPos = searchIntArray(currentNode.getChildren(),_avoidIndex);
           if(avoidPos!=-1){
+            println(currentNode.getChildren().length);
             currentNode.removeChildNode(avoidPos);
+            println(currentNode.getChildren());
           }
           if(currentNode.getChildren() != null){
             for(int j=0; j<currentNode.getChildren().length; j++){

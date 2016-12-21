@@ -72,7 +72,7 @@ class Node{
   }
   //Removes a child node from a nodes childNodes int array
   void removeChildNode(int _pos){
-    if(children.length-1==0){
+    if(children.length-1!=0){
       int[] childNodes = new int[children.length-1];
       int counter = 0;
       for(int i=0; i<children.length; i++){
@@ -81,7 +81,9 @@ class Node{
       }
       setChildren(childNodes);
     }
-    setChildren(null);
+    else{
+      setChildren(null);
+    }
   }
   
   //Adds a child node to a nodes childNodes int array

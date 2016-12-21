@@ -30,7 +30,7 @@ void setup(){
     b[i] = new Tree(t.createSubTree(r, true));
     println(i,"B");
     int r2 = (int)random(a[i].getSize());
-    c[i] = combineTrees(a[i],b[i],r2);
+    c[i] = combineTrees(b[i],a[i],r2);
     println(i,"C", r2);
   }
   for(int i=0; i<a.length; i++){
