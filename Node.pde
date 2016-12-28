@@ -6,12 +6,12 @@ class Node{
   
   Node(){
     parent = -1;
-    roomID = (int)random(100);
+    roomID = (int)random(50);
   }
   
   Node(int _parent){
     parent = _parent;
-    roomID = (int)random(100);
+    roomID = (int)random(50);
   }
   
   Node(int _parent, int _id){

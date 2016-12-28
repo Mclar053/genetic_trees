@@ -15,7 +15,12 @@ int[] newP;
 int[][] oldC;
 int[][] newC;
 
+JSONArray v;
+
 void setup(){
+  //Load JSON Array from rooms.json file
+  v = loadJSONArray("rooms.json");
+  
   t.printNodes();
   oldC = t.getChildren();
   oldP = t.getParents();
