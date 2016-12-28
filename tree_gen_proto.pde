@@ -9,6 +9,9 @@ Tree[] a = new Tree[3];
 Tree[] b = new Tree[3];
 Tree[] c = new Tree[3];
 
+Tree[] l = new Tree[100];
+int[] order = new int[l.length];
+
 float[] player = {0.5,0.5,10,0.5};
 
 int[] oldP;
@@ -19,10 +22,34 @@ int[][] newC;
 
 JSONArray roomValues;
 
+int levels = 10;
+
 void setup(){
+  for(int i=0; i<l.length; i++){
+    l[i] = new Tree();
+    order[i] = i;
+  }
   //Load JSON Array from rooms.json file
   roomValues = loadJSONArray("rooms.json");
   
+  for(int i=0; i<levels; i++){
+    order = bubble_srt_fitness(order, l);
+    println("Combat:",l[order[0]].getRoomRating("combat"));
+    println("Puzzle:",l[order[0]].getRoomRating("puzzle"));
+    println("Size:",l[order[0]].getSize());
+    println("Difficulty:",l[order[0]].getDifficultyRating());
+    println("Fitness:",l[order[0]].fitness(player));
+    
+    for(int j=0; j<9; j++){
+      
+    }
+  }
+  
+  
+  
+  
+  //T TREE
+  /*
   t.printNodes();
   oldC = t.getChildren();
   oldP = t.getParents();
@@ -33,6 +60,7 @@ void setup(){
   println("Difficulty:",t.getDifficultyRating());
   println(t.fitness(player));
   
+  */
   //for(int i=0; i<2; i++){
   //  t.mutate((int)random(t.getSize()));
   //}
@@ -75,12 +103,22 @@ void draw(){
   
 }
 
-void crossover(){
+Tree[] crossover(Tree _t1, Tree _t2){
+  int random1 = (int)random(_t1.getSize());
+  int random2 = (int)random(_t2.getSize());
+  Tree[] t1Parts = new Tree[2];
+  Tree[] t2Parts = new Tree[2];
   
-}
-
-void fitness(){
+  t1Parts[0] = new Tree(_t1.createSubTree(random1,true));
+  t1Parts[1] = new Tree(_t1.createSubTree(random1,false));
   
+  t2Parts[0] = new Tree(_t2.createSubTree(random2,true));
+  t2Parts[1] = new Tree(_t2.createSubTree(random2,false));
+  
+  Tree[] children = new Tree[2];
+  children[0] = combineTrees(t1Parts[0], t2Parts[1], random1);
+  children[1] = combineTrees(t2Parts[0], t1Parts[1], random2);
+  return children;
 }
 
 Tree combineTrees(Tree _tOne, Tree _tTwo, int _childRoot){
@@ -128,4 +166,25 @@ void checkTree(){
       println("NODE",i,"-- OLD",oldP[i],"-- NEW",newP[i]);
     }
   }
+}
+
+//--------------------------------------------BUBBLE SORT----------------------------------------------
+
+//Bubble sort from http://www.java2novice.com/java-sorting-algorithms/bubble-sort/
+//Customised to be used with the Chromosome class I have created
+int[] bubble_srt_fitness(int[] array, Tree[] _chr) {
+  int n = array.length;
+  int k;
+  for (int m = n; m >= 0; m--) {
+    for (int i = 0; i < n - 1; i++) {
+      k = i + 1;
+      if (_chr[array[i]].fitness(player) < _chr[array[k]].fitness(player)) {
+        int temp;
+        temp = array[i];
+        array[i] = array[k];
+        array[k] = temp;
+      }
+    }
+  }
+  return array;
 }
