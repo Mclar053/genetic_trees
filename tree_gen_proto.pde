@@ -62,6 +62,10 @@ void crossover(){
   
 }
 
+void fitness(){
+  
+}
+
 Tree combineTrees(Tree _tOne, Tree _tTwo, int _childRoot){
   ArrayList<Node> nodesOne = _tOne.getNodes();
   ArrayList<Node> nodesTwo = _tTwo.getNodes();

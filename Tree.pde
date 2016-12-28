@@ -257,4 +257,8 @@ class Tree{
     }
     return c;
   }
+  
+  Tree copyTree(){
+    return new Tree(getNodes());
+  }
 }
