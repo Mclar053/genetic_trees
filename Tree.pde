@@ -62,7 +62,7 @@ class Tree{
   //Mutate Node
   void mutate(int _index){
     Node currentNode = nodes.get(_index);
-    currentNode.setRoomID((int)random(100));
+    currentNode.setRoomID((int)random(50));
     nodes.set(_index, currentNode);
   }
   
