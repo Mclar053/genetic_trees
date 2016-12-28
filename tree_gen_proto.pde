@@ -61,6 +61,7 @@ void setup() {
     for(int j=0; j<10; j++){
       l[order[order.length-j-1]] = lChild[orderChild[j]].copyTree();
     }
+    l[order[0]] = new Tree(6);
   }
 
 
