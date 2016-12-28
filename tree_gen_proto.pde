@@ -4,10 +4,12 @@ Author: Matthew Clark
 Date Created: 14/12/2016
 */
 
-Tree t = new Tree(2);
+Tree t = new Tree(3);
 Tree[] a = new Tree[3];
 Tree[] b = new Tree[3];
 Tree[] c = new Tree[3];
+
+float[] player = {0.5,0.5,10,0.5};
 
 int[] oldP;
 int[] newP;
@@ -15,18 +17,28 @@ int[] newP;
 int[][] oldC;
 int[][] newC;
 
-JSONArray v;
+JSONArray roomValues;
 
 void setup(){
   //Load JSON Array from rooms.json file
-  v = loadJSONArray("rooms.json");
+  roomValues = loadJSONArray("rooms.json");
   
   t.printNodes();
   oldC = t.getChildren();
   oldP = t.getParents();
+  
+  println("Combat:",t.getRoomRating("combat"));
+  println("Puzzle:",t.getRoomRating("puzzle"));
+  println("Size:",t.getSize());
+  println("Difficulty:",t.getDifficultyRating());
+  println(t.fitness(player));
+  
   //for(int i=0; i<2; i++){
   //  t.mutate((int)random(t.getSize()));
   //}
+  
+  //SUB TREES
+  /*
   for(int i=0; i<a.length; i++){
     int r = (int)random(1,t.getSize()-1);
     println("Random Number:", r);
@@ -41,6 +53,11 @@ void setup(){
     c[i] = combineTrees(b[i],a[i],r2);
     
   }
+  */
+  
+  
+  //PRINTING TREES
+  /*
   for(int i=0; i<a.length; i++){
     a[i].printNodes();
     println("*******************************");
@@ -49,9 +66,9 @@ void setup(){
     c[i].printNodes();
     println("-------------------------------");
   }
-
-  
-  checkTree();
+*/
+  //CHECKING TREES
+  //checkTree();
 }
 
 void draw(){

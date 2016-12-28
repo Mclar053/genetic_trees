@@ -34,6 +34,30 @@ class Tree{
     createNodes(0);
   }
   
+  float fitness(float[] _player){
+    return sqrt(sq(_player[0]-getRoomRating("combat"))+sq(_player[1]-getRoomRating("puzzle"))+sq((_player[2]-getSize())*0.1)+sq(_player[3]-getDifficultyRating()));
+  }
+  
+  float getRoomRating(String _type){
+    float count = 0;
+    for(Node _n: nodes){
+      JSONObject room = roomValues.getJSONObject(_n.getRoomID());
+      if(_type.equals(room.getString("type"))){
+        count ++;
+      }
+    }
+    return count/float(getSize());
+  }
+  
+  float getDifficultyRating(){
+    float diffSum = 0;
+    for(Node _n: nodes){
+      JSONObject room = roomValues.getJSONObject(_n.getRoomID());
+      diffSum += room.getInt("difficulty");
+    }
+    diffSum/=100;
+    return diffSum/float(getSize());
+  }
   
   //Mutate Node
   void mutate(int _index){
