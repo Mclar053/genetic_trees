@@ -5,6 +5,7 @@ class Tree{
   private int treeSize;
   private int currentLevel = 0;
   private int[] tempSubIndex = new int[0];
+  private int[] tempSubIndexInvert = new int[0];
   
   //---------------CONSTRUCTORS
   Tree(){
@@ -104,26 +105,31 @@ class Tree{
     }
     
     if(_invert){
+      subIndex[0] = 0;
       subIndex = findNodesInvert(0, subIndex, _index);
       subNodes = getNewSubNodesInvert(subIndex, _index);
+      tempSubIndexInvert = subIndex;
     } else{
+      subIndex[_index] = 0;
       subIndex = findNodes(_index, subIndex);
       subNodes = getNewSubNodes(subIndex);
+      tempSubIndex = subIndex;
     }
     
-    tempSubIndex = subIndex;
+    
     return subNodes;
   }
   
   //------FIND NODES FOR NORMAL SUB TREE
   //Find nodes of small tree
   int[] findNodes(int _index, int[] _subIndex){
-    int counter = getCurrentCount(_subIndex);
-    
     int[] subIndex = _subIndex;
-    subIndex[_index] = counter;
     Node currentNode = nodes.get(_index);
+    
     if(currentNode.getChildren() != null){
+      for(int i=0; i<currentNode.getChildren().length; i++){
+        subIndex[currentNode.getChildren()[i]] = getCurrentCount(subIndex);
+      }
       for(int i=0; i<currentNode.getChildren().length; i++){
         subIndex = findNodes(currentNode.getChildren()[i], subIndex);
       }
@@ -134,12 +140,16 @@ class Tree{
   //------FIND NODES FOR INVERTED SUB TREE
   //Find nodes of small tree inverted... So that smallTree + smallTreeInverted = Original Tree 
   int[] findNodesInvert(int _index, int[] _subIndex, int _avoidIndex){
-    int counter = getCurrentCount(_subIndex);
-    
     int[] subIndex = _subIndex;
-    subIndex[_index] = counter;
     Node currentNode = nodes.get(_index);
+    
     if(currentNode.getChildren() != null){
+      for(int i=0; i<currentNode.getChildren().length; i++){
+        if(currentNode.getChildren()[i] != _avoidIndex){
+          subIndex[currentNode.getChildren()[i]] = getCurrentCount(subIndex);
+        }
+      }
+      
       for(int i=0; i<currentNode.getChildren().length; i++){
         if(currentNode.getChildren()[i] != _avoidIndex){
           subIndex = findNodesInvert(currentNode.getChildren()[i], subIndex, _avoidIndex);
@@ -154,8 +164,10 @@ class Tree{
   ArrayList<Node> getNewSubNodes(int[] _subIndex){
     ArrayList<Node> subNodes = new ArrayList<Node>();
     for(int i=0; i<_subIndex.length; i++){
-      if(_subIndex[i]!=-1){
-        Node currentNode = new Node(nodes.get(i));
+      int nextIndex = findNumberInArray(_subIndex, subNodes.size());
+      
+      if(nextIndex!=-1){
+        Node currentNode = new Node(nodes.get(nextIndex));
         if(currentNode.getParent() != -1){
           currentNode.setParent(_subIndex[currentNode.getParent()]);
         }
@@ -176,8 +188,10 @@ class Tree{
     ArrayList<Node> subNodes = new ArrayList<Node>();
     int avoidPos;
     for(int i=0; i<_subIndex.length; i++){
-      if(_subIndex[i]!=-1 && i!= _avoidIndex){
-        Node currentNode = new Node(nodes.get(i));
+      int nextIndex = findNumberInArray(_subIndex, subNodes.size());
+      
+      if(nextIndex!=-1 && nextIndex!= _avoidIndex){
+        Node currentNode = new Node(nodes.get(nextIndex));
         if(currentNode.getParent() != -1){
           currentNode.setParent(_subIndex[currentNode.getParent()]);
         }
@@ -203,6 +217,15 @@ class Tree{
     for(int i=0; i<_array.length; i++){
       if(_array[i]==_num)
         return i;
+    }
+    return -1;
+  }
+  
+  private int findNumberInArray(int[] _arr, int _num){
+    for(int i=0; i<_arr.length; i++){
+      if(_arr[i] == _num){
+        return i;
+      }
     }
     return -1;
   }
@@ -288,12 +311,18 @@ class Tree{
     return c;
   }
   
-  void printSubIndex(){
+  void printSubIndex(boolean invert){
+    int[] _si;
+    if(invert){
+      _si = tempSubIndexInvert;
+    }else{
+      _si = tempSubIndex;
+    }
     println("SUB INDEX:");
     print("[");
-    for(int i=0; i<tempSubIndex.length; i++){
-      print(i,tempSubIndex[i]);
-      if(i<tempSubIndex.length-1)
+    for(int i=0; i<_si.length; i++){
+      print("("+i+")",_si[i]);
+      if(i<_si.length-1)
       print(", ");
     }
     println("]");

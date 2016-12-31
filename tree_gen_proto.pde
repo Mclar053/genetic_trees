@@ -150,24 +150,32 @@ Tree[] crossover(Tree _t1, Tree _t2) {
   
   if(errorTree(t1Parts[0]) || errorTree(t1Parts[1]) || errorTree(t2Parts[0]) || errorTree(t2Parts[1]) || errorTree(children[0]) || errorTree(children[0])){
     _t1.printNodes();
-    _t1.printSubIndex();
+    _t1.printSubIndex(true);
+    _t1.printSubIndex(false);
     _t2.printNodes();
-    _t2.printSubIndex();
+    _t2.printSubIndex(true);
+    _t2.printSubIndex(false);
     println("\n-----T1 PARTS-----");
     t1Parts[0].printNodes();
-    t1Parts[0].printSubIndex();
+    t1Parts[0].printSubIndex(true);
+    t1Parts[0].printSubIndex(false);
     t1Parts[1].printNodes();
-    t1Parts[1].printSubIndex();
+    t1Parts[1].printSubIndex(true);
+    t1Parts[1].printSubIndex(false);
     println("\n-----T2 PARTS-----");
     t2Parts[0].printNodes();
-    t2Parts[0].printSubIndex();
+    t2Parts[0].printSubIndex(true);
+    t2Parts[0].printSubIndex(false);
     t2Parts[1].printNodes();
-    t2Parts[1].printSubIndex();
+    t2Parts[1].printSubIndex(true);
+    t2Parts[1].printSubIndex(false);
     println("\n-----Children-----");
     children[0].printNodes();
-    children[0].printSubIndex();
+    children[0].printSubIndex(true);
+    children[0].printSubIndex(false);
     children[1].printNodes();
-    children[1].printSubIndex();
+    children[1].printSubIndex(true);
+    children[1].printSubIndex(false);
   }
   
   //children[0] = combineTrees(t1Parts[0], t2Parts[1], _t1.getNode(random1).getParent());
@@ -237,8 +245,8 @@ boolean errorTree(Tree _t){
     Node n = nodes.get(i);
     
     //Checking if more than 1 root
-    if(n.getParent()==-1){
-      if(count++>1){
+    if(n.getParent()==-1 || n.getParent()==i){
+      if(count++>1 || n.getParent()==i){
         println("PARENT ERROR:",i,n.getParent());
         error = true;
       }
