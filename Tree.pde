@@ -4,6 +4,7 @@ class Tree{
   private ArrayList<Node> nodes;
   private int treeSize;
   private int currentLevel = 0;
+  private int[] tempSubIndex = new int[0];
   
   //---------------CONSTRUCTORS
   Tree(){
@@ -61,7 +62,7 @@ class Tree{
   
   //Mutate Node
   void mutate(int _index){
-    Node currentNode = nodes.get(_index);
+    Node currentNode = new Node(nodes.get(_index));
     currentNode.setRoomID((int)random(50));
     nodes.set(_index, currentNode);
   }
@@ -109,7 +110,8 @@ class Tree{
       subIndex = findNodes(_index, subIndex);
       subNodes = getNewSubNodes(subIndex);
     }
-        
+    
+    tempSubIndex = subIndex;
     return subNodes;
   }
   
@@ -238,7 +240,11 @@ class Tree{
   }
   
   ArrayList<Node> getNodes(){
-    return nodes;
+    ArrayList<Node> n = new ArrayList<Node>();
+    for(Node _n: nodes){
+      n.add(new Node(_n));
+    }
+    return n;
   }
   
   int getSize(){
@@ -280,6 +286,17 @@ class Tree{
       }
     }
     return c;
+  }
+  
+  void printSubIndex(){
+    println("SUB INDEX:");
+    print("[");
+    for(int i=0; i<tempSubIndex.length; i++){
+      print(i,tempSubIndex[i]);
+      if(i<tempSubIndex.length-1)
+      print(", ");
+    }
+    println("]");
   }
   
   Tree copyTree(){

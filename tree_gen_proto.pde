@@ -9,12 +9,12 @@ Tree[] a = new Tree[3];
 Tree[] b = new Tree[3];
 Tree[] c = new Tree[3];
 
-Tree[] l = new Tree[100];
+Tree[] l = new Tree[20];
 int[] order = new int[l.length];
-Tree[] lChild = new Tree[20];
+Tree[] lChild = new Tree[10];
 int[] orderChild = new int[lChild.length];
 
-float[] player = {0.5, 0.5, 10, 0.5};
+float[] player = {0.5, 0.5, 10, 0.4};
 
 int[] oldP;
 int[] newP;
@@ -24,18 +24,20 @@ int[][] newC;
 
 JSONArray roomValues;
 
-int levels = 10;
+int levels = 4;
 
 void setup() {
   for (int i=0; i<l.length; i++) {
-    l[i] = new Tree(6);
+    l[i] = new Tree(4);
     order[i] = i;
   }
   //Load JSON Array from rooms.json file
   roomValues = loadJSONArray("rooms.json");
 
   for (int i=0; i<levels; i++) {
+    l[order[0]] = new Tree(4);
     order = bubble_srt_fitness(order, l);
+    println(i);
     println("Combat:", l[order[0]].getRoomRating("combat"));
     println("Puzzle:", l[order[0]].getRoomRating("puzzle"));
     println("Size:", l[order[0]].getSize());
@@ -44,24 +46,25 @@ void setup() {
     println("---------------------------------------------");
 
 
-    for(int j=10; j<l.length; j++){
+    for(int j=5; j<l.length; j++){
       l[order[j]].mutate((int)random(l[order[j]].getSize()));
     }
 
-    for (int j=0; j<10; j++) {
+    for (int j=0; j<orderChild.length/2; j++) {
       Tree[] _t = crossover(l[order[j]],l[order[j+1]]);
-      lChild[2*j] = _t[0].copyTree();
-      lChild[2*j+1] = _t[1].copyTree();
+      lChild[2*j] = _t[0];
+      lChild[2*j+1] = _t[1];
     }
     for (int k=0; k<orderChild.length; k++) {
       orderChild[k] = k;
     }
     orderChild = bubble_srt_fitness(orderChild,lChild);
     
-    for(int j=0; j<10; j++){
-      l[order[order.length-j-1]] = lChild[orderChild[j]].copyTree();
+    for(int j=0; j<5; j++){
+      l[order[order.length-j-1]] = new Tree(lChild[orderChild[j]].getNodes());
     }
-    l[order[0]] = new Tree(6);
+    
+    player[3] += 0.05;
   }
 
 
@@ -124,18 +127,51 @@ void draw() {
 Tree[] crossover(Tree _t1, Tree _t2) {
   int random1 = (int)random(1,_t1.getSize());
   int random2 = (int)random(1,_t2.getSize());
+  //println("RANDOM",random1,_t1.getNode(random1).getParent(),random2,_t2.getNode(random2).getParent());
   Tree[] t1Parts = new Tree[2];
   Tree[] t2Parts = new Tree[2];
 
+  //DO ERROR CHECKS HERE
+
+  //println("1");
   t1Parts[0] = new Tree(_t1.createSubTree(random1, true));
+  //println("a");
   t1Parts[1] = new Tree(_t1.createSubTree(random1, false));
-
+  
+  //println("2");
   t2Parts[0] = new Tree(_t2.createSubTree(random2, true));
+  //println("b");
   t2Parts[1] = new Tree(_t2.createSubTree(random2, false));
-
+  
+  //println("3");
   Tree[] children = new Tree[2];
-  children[0] = combineTrees(t1Parts[0], t2Parts[1], _t1.getNode(random1).getParent());
-  children[1] = combineTrees(t2Parts[0], t1Parts[1], _t2.getNode(random2).getParent());
+  children[0] = combineTrees(t1Parts[0], t2Parts[1], (int)random(t1Parts[0].getSize()));
+  children[1] = combineTrees(t2Parts[0], t1Parts[1], (int)random(t2Parts[0].getSize()));
+  
+  if(errorTree(t1Parts[0]) || errorTree(t1Parts[1]) || errorTree(t2Parts[0]) || errorTree(t2Parts[1]) || errorTree(children[0]) || errorTree(children[0])){
+    _t1.printNodes();
+    _t1.printSubIndex();
+    _t2.printNodes();
+    _t2.printSubIndex();
+    println("\n-----T1 PARTS-----");
+    t1Parts[0].printNodes();
+    t1Parts[0].printSubIndex();
+    t1Parts[1].printNodes();
+    t1Parts[1].printSubIndex();
+    println("\n-----T2 PARTS-----");
+    t2Parts[0].printNodes();
+    t2Parts[0].printSubIndex();
+    t2Parts[1].printNodes();
+    t2Parts[1].printSubIndex();
+    println("\n-----Children-----");
+    children[0].printNodes();
+    children[0].printSubIndex();
+    children[1].printNodes();
+    children[1].printSubIndex();
+  }
+  
+  //children[0] = combineTrees(t1Parts[0], t2Parts[1], _t1.getNode(random1).getParent());
+  //children[1] = combineTrees(t2Parts[0], t1Parts[1], _t2.getNode(random2).getParent());
   return children;
 }
 
@@ -154,6 +190,7 @@ Tree combineTrees(Tree _tOne, Tree _tTwo, int _childRoot) {
       currentNode.setParent(_childRoot);
       Node childRoot = newNodes.get(_childRoot);
       childRoot.addChildNode(nodesOne.size());
+      newNodes.set(_childRoot,childRoot);
     }
     int[] currentNodeChildren = currentNode.getChildren();
     if (currentNodeChildren != null) {
@@ -164,7 +201,14 @@ Tree combineTrees(Tree _tOne, Tree _tTwo, int _childRoot) {
     currentNode.setChildren(currentNodeChildren);
     newNodes.add(currentNode);
   }
-  return new Tree(newNodes);
+  Tree newTree = new Tree(newNodes);
+  //if(errorTree(newTree)){
+  //  println("CHILD ROOT:",_childRoot,"NODES ONE:",nodesOne.size(),"NODES TWO:",nodesTwo.size());
+  //  _tOne.printNodes();
+  //  _tTwo.printNodes();
+  //  println("---------------------\n\n");
+  //}
+  return newTree;
 }
 
 void checkTree() {
@@ -183,6 +227,37 @@ void checkTree() {
       println("NODE", i, "-- OLD", oldP[i], "-- NEW", newP[i]);
     }
   }
+}
+
+boolean errorTree(Tree _t){
+  ArrayList<Node> nodes = _t.getNodes();
+  boolean error = false;
+  int count = 0;
+  for(int i=0; i<nodes.size(); i++){
+    Node n = nodes.get(i);
+    
+    //Checking if more than 1 root
+    if(n.getParent()==-1){
+      if(count++>1){
+        println("PARENT ERROR:",i,n.getParent());
+        error = true;
+      }
+    }
+    
+    if(n.getChildren()!=null){
+      for(int j: n.getChildren()){
+        if(j==i){
+          println("CHILD ERROR:",i);
+          error=true;
+        }
+      }
+    }
+  }
+  if(error){
+    _t.printNodes();
+    println("---------------------------------\n");
+  }
+  return error;
 }
 
 //--------------------------------------------BUBBLE SORT----------------------------------------------
