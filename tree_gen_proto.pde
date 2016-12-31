@@ -24,7 +24,7 @@ int[][] newC;
 
 JSONArray roomValues;
 
-int levels = 4;
+int levels = 10;
 
 void setup() {
   for (int i=0; i<l.length; i++) {
@@ -63,6 +63,8 @@ void setup() {
     for(int j=0; j<5; j++){
       l[order[order.length-j-1]] = new Tree(lChild[orderChild[j]].getNodes());
     }
+    
+    l[order[0]].printNodes();
     
     player[3] += 0.05;
   }
